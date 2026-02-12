@@ -1,43 +1,194 @@
-# Travel Log Github Project Creator
+# Issue Board Creator
 
-A tool to create all the labels, issues and project cards for the Travel Log project.
+A general CLI tool to create GitHub labels, issues, and Kanban project cards from markdown files. Perfect for setting up project management boards from user stories and epics.
 
-## Setup
+## Features
 
-### Repo / Project Setup
+- 🎯 Creates GitHub issues from markdown files
+- 📊 Supports epic/story hierarchical relationships
+- 🏷️ Automatically creates and manages labels
+- 🎨 Adds issues to Kanban project boards
+- ⚙️ Flexible configuration (config file, env vars, or interactive prompts)
+- 🚀 Works with any project format
 
-1. Create a repo on github
-2. Add a project to the repo and choose the "Kanban" template
-
-### Tool Setup
-
-Create a .env file and update with your values.
-
-You can create a github token with the "repo" and "project" scope [here](https://github.com/settings/tokens/new).
+## Installation
 
 ```sh
-cp .env.example .env
-```
-
-Install dependencies:
-
-```sh
+# Install dependencies
 pnpm install
 ```
 
-## Run
+## Usage
 
-Run the tool to create the labels, issues and project cards.
+The tool looks for configuration in this priority order:
+1. **Default `./data` directory** - if it exists in current directory
+2. **Config file** - `.issue-board-creator.json` or `.issue-board-creator.config.json`
+3. **Environment variables** - `GITHUB_OWNER`, `GITHUB_REPO`, `GITHUB_TOKEN`
+4. **Interactive prompts** - asks for missing information
+
+### Quick Start (with default ./data directory)
 
 ```sh
-pnpm start
+# If you have a ./data folder with epics/ and stories/ subdirectories
+pnpm cli
 ```
 
-## Use this tool for other projects
+### Using Configuration File
 
-- The stories are in the [./data](./data) folder as markdown files.
-  - Epics are in [./data/epics/](./data/epics/)
-  - User stories are in [./data/stories/](./data/stories/)
-    - Each story file name should start with the corresponding epic story number.
-- The priority / order of stories on the board is in [./data/priority.json](./data/priority.json)
-- The code in [./src/index.ts](./src/index.ts) reads the markdown files in and creates the labels, issues and project cards accordingly.
+1. Copy the example config:
+```sh
+cp .issue-board-creator.json.example .issue-board-creator.json
+```
+
+2. Edit `.issue-board-creator.json` with your settings:
+```json
+{
+  "github": {
+    "owner": "your-username",
+    "repo": "your-repo-name",
+    "token": "your-github-token-or-set-in-env"
+  },
+  "data": {
+    "epicsDir": "./data/epics",
+    "storiesDir": "./data/stories",
+    "priorityFile": "./data/priority.json"
+  }
+}
+```
+
+3. Run the tool:
+```sh
+pnpm cli
+```
+
+### Using Environment Variables
+
+```sh
+# Set environment variables
+export GITHUB_OWNER="your-username"
+export GITHUB_REPO="your-repo-name"
+export GITHUB_TOKEN="your-github-token"
+
+# Run the tool
+pnpm cli
+```
+
+### Interactive Mode
+
+If no configuration is found, the tool will prompt you for:
+- GitHub username/organization
+- Repository name
+- GitHub personal access token
+- Paths to epics, stories, and priority files
+
+## Setup Requirements
+
+### GitHub Setup
+
+1. Create a repository on GitHub
+2. Add a project to the repository and choose the "Kanban" template
+3. Create a GitHub personal access token with "repo" and "project" scopes [here](https://github.com/settings/tokens/new)
+
+### Data Directory Structure
+
+Your project should follow this structure:
+
+```
+./data/
+├── epics/
+│   ├── 001-epic-one.md
+│   ├── 002-epic-two.md
+│   └── ...
+├── stories/
+│   ├── 001-001-first-story.md
+│   ├── 001-002-second-story.md
+│   ├── 002-001-first-story-of-epic-2.md
+│   └── ...
+└── priority.json
+```
+
+### Markdown File Format
+
+**Epic file** (e.g., `001-epic-one.md`):
+```markdown
+---
+title: Epic One
+label: epic-one-label
+role: user
+action: perform an action
+benefit: achieve a goal
+---
+
+Epic description goes here...
+```
+
+**Story file** (e.g., `001-001-first-story.md`):
+```markdown
+---
+title: First Story
+label: epic-one-label
+role: user
+action: do something specific
+benefit: get some value
+---
+
+Story description goes here...
+```
+
+### Priority File
+
+The `priority.json` file defines the order of stories on the board:
+
+```json
+[
+  "001-001",
+  "001-002",
+  "002-001",
+  "001-003"
+]
+```
+
+## Scripts
+
+```sh
+# Run with CLI prompts
+pnpm cli
+
+# Run directly (requires .env file)
+pnpm start
+
+# Lint code
+pnpm lint
+
+# Fix linting issues
+pnpm lint:fix
+```
+
+## Using for Other Projects
+
+This tool is designed to work with any project. To use it for your projects:
+
+1. Create your data directory with epics and stories as markdown files
+2. Create a `priority.json` file to define story order
+3. Run the tool from your project directory
+4. Configure via config file, environment variables, or interactive prompts
+
+## How It Works
+
+The tool:
+1. Reads epic files from the epics directory
+2. Creates GitHub issues for each epic with an "Epic" label
+3. Reads story files and creates child issues linked to their parent epic
+4. Creates labels based on epic categories
+5. Adds all issues to your Kanban project board in priority order
+6. Maintains epic/story hierarchical relationships
+
+## Development
+
+```sh
+# Install dependencies
+pnpm install
+
+# Run in development
+tsx src/cli.ts
+```

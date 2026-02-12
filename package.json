@@ -1,15 +1,19 @@
 {
-  "name": "travel-log-github-project-creator",
+  "name": "issue-board-creator",
   "type": "module",
   "version": "1.0.0",
   "packageManager": "pnpm@10.5.2",
-  "description": "",
+  "description": "A CLI tool to create GitHub labels, issues and Kanban project cards from markdown files",
   "author": "",
   "license": "MIT",
-  "keywords": [],
+  "keywords": ["github", "project-management", "cli", "kanban", "issues"],
   "main": "index.js",
+  "bin": {
+    "issue-board-creator": "./src/cli.js"
+  },
   "scripts": {
     "start": "tsx src/index.ts",
+    "cli": "tsx src/cli.ts",
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."
   },
@@ -17,12 +21,14 @@
     "@octokit/graphql": "^8.2.1",
     "@octokit/rest": "^21.1.1",
     "dotenv": "^16.4.7",
+    "prompts": "^2.4.2",
     "tsx": "^4.19.3",
     "yaml": "^2.7.1"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.10.1",
     "@types/node": "^22.13.10",
+    "@types/prompts": "^2.4.9",
     "eslint": "^9.22.0",
     "eslint-plugin-format": "^1.0.1",
     "typescript": "^5.8.2"
