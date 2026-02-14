@@ -2,11 +2,11 @@
 import dotenv from "dotenv";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import prompts from "prompt";
+import prompts from "prompts";
 
 dotenv.config();
 
-interface Config {
+type Config = {
   github: {
     owner: string;
     repo: string;
@@ -17,7 +17,7 @@ interface Config {
     storiesDir: string;
     priorityFile: string;
   };
-}
+};
 
 // Check if ./data directory exists
 function checkDefaultDataDir(): string | null {
@@ -41,7 +41,7 @@ function loadConfigFile(): Config | null {
         const configContent = readFileSync(configPath, "utf-8");
         return JSON.parse(configContent);
       }
-      catch (error) {
+      catch {
         console.warn(`Warning: Could not parse config file ${configPath}`);
       }
     }
